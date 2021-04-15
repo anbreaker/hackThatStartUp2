@@ -17,10 +17,6 @@ const postUsers = async (req = request, res = response) => {
 
   const user = new User({ username, email, password });
 
-  // Verificar Email
-  const emailExist = await User.findOne({ email });
-  if (emailExist) return res.status(400).json({ error: 'This email already exists' });
-
   user.password = await encryptPass(password);
 
   // Save on DB
