@@ -5,27 +5,27 @@ const { response, request } = require('express');
 const getAsteroids = (req = request, res = response) => {
   const { page = 1, limit = 3 } = req.query;
 
-  res.json({ sms: 'get - API', page, limit });
+  res.json({ sms: 'get ASTEROID - API', page, limit });
 };
 
 const postAsteroids = (req = request, res = response) => {
   const { name, age } = req.body;
 
-  res.json({ sms: 'post - API', name, age });
+  res.json({ sms: 'post ASTEROID - API', name, age });
 };
 
 const putAsteroids = (req = request, res = response) => {
   const { id } = req.params;
 
-  res.json({ sms: 'put - API', id });
+  res.json({ sms: 'put ASTEROID - API', id });
 };
 
 const patchAsteroids = (req = request, res = response) => {
-  res.json({ sms: 'patch - API' });
+  res.json({ sms: 'patch ASTEROID - API' });
 };
 
 const deleteAsteroids = (req = request, res = response) => {
-  res.json({ sms: 'delete - API' });
+  res.json({ sms: 'delete ASTEROID - API' });
 };
 
 module.exports = {
