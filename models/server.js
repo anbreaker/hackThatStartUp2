@@ -2,11 +2,19 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
+const { dbConnection } = require('../database/mongoose.config');
+
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
-    this.routePath = '/api/asteroids';
+
+    // API Routes
+    this.routeUsers = '/api/users';
+    this.routeAsteroids = '/api/asteroids';
+
+    // Connect to Database
+    this.connectDB();
 
     // Middlewares
     this.middlewares();
@@ -26,8 +34,14 @@ class Server {
     this.app.use(morgan('dev'));
   }
 
+  async connectDB() {
+    await dbConnection();
+  }
+
   routes() {
-    this.app.use(this.routePath, require('../routes/asteroids.routes'));
+    this.app.use(this.routeUsers, require('../routes/users.routes'));
+
+    this.app.use(this.routeAsteroids, require('../routes/asteroids.routes'));
   }
 
   listen() {
