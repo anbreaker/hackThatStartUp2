@@ -17,18 +17,26 @@ const postUsers = async (req = request, res = response) => {
 
   const user = new User({ username, email, password });
 
-  user.password = await encryptPass(password);
+  user.password = encryptPass(password);
 
-  // Save on DB
+  // Save on mongoDB
   await user.save();
 
   res.json({ sms: 'post USER - API', user });
 };
 
-const putUsers = (req = request, res = response) => {
+const putUsers = async (req = request, res = response) => {
   const { id } = req.params;
 
-  res.json({ sms: 'put USER - API', id });
+  // TODO validar contra mongoDB
+
+  const { _id, status, password, email, ...restParams } = req.body;
+
+  if (password) restParams.password = encryptPass(password);
+
+  const user = await User.findByIdAndUpdate(id, restParams);
+
+  res.json({ sms: 'put USER - API', user });
 };
 
 const patchUsers = (req = request, res = response) => {
