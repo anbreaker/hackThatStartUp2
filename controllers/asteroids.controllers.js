@@ -2,16 +2,23 @@
 // Renombrado de request & response para utilizar ayuda IDE
 const { response, request } = require('express');
 
+const Asteroid = require('../models/asteroid.model');
+
 const getAsteroids = (req = request, res = response) => {
   const { page = 1, limit = 3 } = req.query;
 
   res.json({ sms: 'get ASTEROID - API', page, limit });
 };
 
-const postAsteroids = (req = request, res = response) => {
-  const { name, age } = req.body;
+const postAsteroids = async (req = request, res = response) => {
+  const { full_name, a, e, i, om, w, ma } = req.body;
 
-  res.json({ sms: 'post ASTEROID - API', name, age });
+  const asteroid = new Asteroid({ full_name, a, e, i, om, w, ma });
+
+  // Save on mongoDB
+  await asteroid.save();
+
+  res.json({ sms: 'post ASTEROID - API', asteroid });
 };
 
 const putAsteroids = (req = request, res = response) => {
