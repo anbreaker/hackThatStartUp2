@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const { dbConnection } = require('../database/mongoose.config');
+const { db } = require('./asteroid.model');
 
 class Server {
   constructor() {
