@@ -2,7 +2,7 @@ const readline = require('readline');
 const csvtojson = require('csvtojson');
 require('dotenv').config();
 
-const Asteroids = require('../models/asteroid.model');
+const Asteroid = require('../models/asteroid.model');
 
 // Init Script from (root '/')
 const { dbConnection } = require('../database/mongoose.config');
@@ -12,9 +12,21 @@ const initAsteroidsDB = async () => {
   try {
     console.log('Emptying asteroids collection...');
 
-    await Asteroids.deleteMany();
+    await Asteroid.deleteMany();
 
     console.log('Data successfully deleted!');
+
+    // Read CSV file with asteroids
+    await csvtojson()
+      .fromFile('./database/OrbitalParameters_PHAs.csv')
+      .then(async (listAsteroidsObj) => {
+        // console.log(listAsteroidsObj);
+        await Asteroid.create(listAsteroidsObj);
+
+        console.log(
+          `Data successfully loaded!. ${listAsteroidsObj.length} asteroids have been created.`
+        );
+      });
   } catch (error) {
     console.log(`There was an error!: ${error}`);
     process.exit(1);
@@ -28,12 +40,13 @@ const initAsteroidsDB = async () => {
 
 const askUser = (askText) => {
   return new Promise((resolve, reject) => {
-    const rl = readline.createInterface({
+    const readLine = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
     });
-    rl.question(askText, (answer) => {
-      rl.close();
+
+    readLine.question(askText, (answer) => {
+      readLine.close();
       resolve(answer);
     });
   });
@@ -53,7 +66,6 @@ const connectDB = async () => {
     await initAsteroidsDB();
 
     // close connection
-
     process.exit();
   } catch (error) {
     console.log(`There was an error!: ${error}`);
