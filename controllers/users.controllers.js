@@ -68,7 +68,7 @@ const deleteUsers = async (req = request, res = response) => {
   // const user = await User.findByIdAndDelete(id);
 
   // Delete by status (to preserve the integrity of the relationships in Mongo)
-  const user = await User.findOneAndUpdate(id, { status: false });
+  const user = await User.findByIdAndUpdate(id, { status: false });
 
   res.json({ sms: 'delete USER - API', user });
 };

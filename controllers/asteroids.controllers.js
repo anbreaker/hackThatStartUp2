@@ -58,7 +58,7 @@ const deleteAsteroids = async (req = request, res = response) => {
   // const asteroid = await Asteroid.findByIdAndDelete(id);
 
   // Delete by status (to preserve the integrity of the relationships in Mongo)
-  const asteroid = await Asteroid.findOneAndUpdate(id, { status: false });
+  const asteroid = await Asteroid.findByIdAndUpdate(id, { status: false });
 
   res.json({ sms: 'delete ASTEROID - API', asteroid });
 };
