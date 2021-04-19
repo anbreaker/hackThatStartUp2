@@ -6,10 +6,14 @@ const encryptPass = require('../helpers/bcryptjs');
 
 const User = require('../models/user.model');
 
-const getUsers = (req = request, res = response) => {
-  const { page = 1, limit = 3 } = req.query;
+const getUsers = async (req = request, res = response) => {
+  const { limit = 3, from = 1 } = req.query;
 
-  res.json({ sms: 'get USER - API', page, limit });
+  const users = await User.find().skip(Number(from)).limit(Number(limit));
+
+  const totalUsers = await User.countDocuments();
+
+  res.json({ sms: 'get USER - API', 'Total Users': totalUsers, users });
 };
 
 const postUsers = async (req = request, res = response) => {

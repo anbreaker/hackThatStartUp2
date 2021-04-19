@@ -7,11 +7,15 @@ const {
   patchUsers,
   deleteUsers,
 } = require('../controllers/users.controllers');
-const { checkPostUser, checkPutUser } = require('../middlewares/checkUserFields');
+const {
+  checkGetUser,
+  checkPostUser,
+  checkPutUser,
+} = require('../middlewares/checkUserFields');
 
 const router = Router();
 
-router.get('/', getUsers);
+router.get('/', checkGetUser, getUsers);
 
 router.post('/', checkPostUser, postUsers);
 

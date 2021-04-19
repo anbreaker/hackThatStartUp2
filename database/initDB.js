@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const Asteroid = require('../models/asteroid.model');
 const User = require('../models/user.model');
+const encryptPass = require('../helpers/bcryptjs');
 
 // Init Script from (root '/')
 const { dbConnection } = require('../database/mongoose.config');
@@ -18,18 +19,24 @@ const initDatabase = async () => {
     await User.deleteMany();
 
     console.log('Data successfully deleted!');
+    console.log('Creating Users and Asteroids...');
 
     // Read CSV file with asteroids
     const databasesToInit = ['Users', 'OrbitalParameters_PHAs'];
 
     for (let i = 0; i < databasesToInit.length; i++) {
       const element = databasesToInit[i];
-      console.log(element);
 
       await csvtojson()
         .fromFile(`./database/${element}.csv`)
         .then(async (element) => {
-          if (i === 0) await User.create(element);
+          if (i === 0) {
+            for (let i = 0; i < element.length; i++) {
+              element[i].password = encryptPass(element[i].password);
+            }
+
+            await User.create(element);
+          }
           if (i === 1) await Asteroid.create(element);
 
           console.log(`Data successfully loaded!. ${element.length} have been created.`);

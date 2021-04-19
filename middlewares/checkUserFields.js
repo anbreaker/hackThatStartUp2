@@ -1,7 +1,9 @@
 const { check } = require('express-validator');
 
 const { userExistOnDB, emailExistOnDB } = require('../helpers/validator');
-const { validateFields } = require('./validateFields');
+const { validateFields, validatePagination } = require('./validateFields');
+
+const checkGetUser = [validatePagination];
 
 const checkPostUser = [
   check('username', 'The username is Mandotory').not().isEmpty(),
@@ -20,4 +22,4 @@ const checkPutUser = [
   validateFields,
 ];
 
-module.exports = { checkPostUser, checkPutUser };
+module.exports = { checkGetUser, checkPostUser, checkPutUser };
