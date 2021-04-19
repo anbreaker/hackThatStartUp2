@@ -28,9 +28,9 @@ const postUsers = async (req = request, res = response) => {
 const putUsers = async (req = request, res = response) => {
   const { id } = req.params;
 
-  // TODO validar contra mongoDB
-
   const { _id, status, password, email, ...restParams } = req.body;
+
+  // TODO validar contra mongoDB
 
   if (password) restParams.password = encryptPass(password);
 

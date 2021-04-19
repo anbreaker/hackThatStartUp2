@@ -21,10 +21,15 @@ const postAsteroids = async (req = request, res = response) => {
   res.json({ sms: 'post ASTEROID - API', asteroid });
 };
 
-const putAsteroids = (req = request, res = response) => {
+const putAsteroids = async (req = request, res = response) => {
   const { id } = req.params;
 
-  res.json({ sms: 'put ASTEROID - API', id });
+  // const { full_name, a, e, i, om, w, ma } = req.body
+  const data = req.body;
+
+  const asteroid = await Asteroid.findByIdAndUpdate(id, data);
+
+  res.json({ sms: 'put ASTEROID - API', asteroid });
 };
 
 const patchAsteroids = (req = request, res = response) => {
