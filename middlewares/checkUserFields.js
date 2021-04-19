@@ -22,4 +22,10 @@ const checkPutUser = [
   validateFields,
 ];
 
-module.exports = { checkGetUser, checkPostUser, checkPutUser };
+const checkDeleteUser = [
+  check('id', 'Not is a valid Id').isMongoId(),
+  check('id').custom(userExistOnDB),
+  validateFields,
+];
+
+module.exports = { checkGetUser, checkPostUser, checkPutUser, checkDeleteUser };

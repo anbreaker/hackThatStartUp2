@@ -10,6 +10,7 @@ const {
 const {
   checkPostAsteroids,
   checkPutAsteroids,
+  checkDeleteAsteroid,
 } = require('../middlewares/checkAsteroidFields');
 
 const router = Router();
@@ -22,6 +23,6 @@ router.put('/:id', checkPutAsteroids, putAsteroids);
 
 router.patch('/:id', patchAsteroids);
 
-router.delete('/:id', deleteAsteroids);
+router.delete('/:id', checkDeleteAsteroid, deleteAsteroids);
 
 module.exports = router;

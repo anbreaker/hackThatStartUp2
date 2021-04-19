@@ -7,7 +7,7 @@ const encryptPass = require('../helpers/bcryptjs');
 const User = require('../models/user.model');
 
 const getUsers = async (req = request, res = response) => {
-  const { limit = 3, from = 1 } = req.query;
+  const { limit = 3, from = 0 } = req.query;
 
   const query = { status: true };
 
@@ -61,8 +61,16 @@ const patchUsers = (req = request, res = response) => {
   res.json({ sms: 'patch USER - API' });
 };
 
-const deleteUsers = (req = request, res = response) => {
-  res.json({ sms: 'delete USER - API' });
+const deleteUsers = async (req = request, res = response) => {
+  const { id } = req.params;
+
+  // "Physical" delete
+  // const user = await User.findByIdAndDelete(id);
+
+  // Delete by status (to preserve the integrity of the relationships in Mongo)
+  const user = await User.findOneAndUpdate(id, { status: false });
+
+  res.json({ sms: 'delete USER - API', user });
 };
 
 module.exports = {

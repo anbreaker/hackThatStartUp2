@@ -39,4 +39,10 @@ const checkPutAsteroids = [
   validateFields,
 ];
 
-module.exports = { checkPostAsteroids, checkPutAsteroids };
+const checkDeleteAsteroid = [
+  check('id', 'Not is a valid Id').isMongoId(),
+  check('id').custom(asteroidExistOnDB),
+  validateFields,
+];
+
+module.exports = { checkPostAsteroids, checkPutAsteroids, checkDeleteAsteroid };

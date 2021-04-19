@@ -11,6 +11,7 @@ const {
   checkGetUser,
   checkPostUser,
   checkPutUser,
+  checkDeleteUser,
 } = require('../middlewares/checkUserFields');
 
 const router = Router();
@@ -23,6 +24,6 @@ router.put('/:id', checkPutUser, putUsers);
 
 router.patch('/:id', patchUsers);
 
-router.delete('/:id', deleteUsers);
+router.delete('/:id', checkDeleteUser, deleteUsers);
 
 module.exports = router;

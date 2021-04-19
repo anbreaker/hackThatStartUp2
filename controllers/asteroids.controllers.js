@@ -5,7 +5,7 @@ const { response, request } = require('express');
 const Asteroid = require('../models/asteroid.model');
 
 const getAsteroids = async (req = request, res = response) => {
-  const { limit = 5, from = 1 } = req.query;
+  const { limit = 5, from = 0 } = req.query;
 
   const query = { status: true };
 
@@ -51,8 +51,16 @@ const patchAsteroids = (req = request, res = response) => {
   res.json({ sms: 'patch ASTEROID - API' });
 };
 
-const deleteAsteroids = (req = request, res = response) => {
-  res.json({ sms: 'delete ASTEROID - API' });
+const deleteAsteroids = async (req = request, res = response) => {
+  const { id } = req.params;
+
+  // "Physical" delete
+  // const asteroid = await Asteroid.findByIdAndDelete(id);
+
+  // Delete by status (to preserve the integrity of the relationships in Mongo)
+  const asteroid = await Asteroid.findOneAndUpdate(id, { status: false });
+
+  res.json({ sms: 'delete ASTEROID - API', asteroid });
 };
 
 module.exports = {
