@@ -9,11 +9,25 @@ const User = require('../models/user.model');
 const getUsers = async (req = request, res = response) => {
   const { limit = 3, from = 1 } = req.query;
 
-  const users = await User.find().skip(Number(from)).limit(Number(limit));
+  const query = { status: true };
 
-  const totalUsers = await User.countDocuments();
+  // const users = await User.find(query).skip(Number(from)).limit(Number(limit));
+  // const totalUsers = await User.countDocuments(query);
 
-  res.json({ sms: 'get USER - API', 'Total Users': totalUsers, users });
+  const promiseResponse = await Promise.all([
+    User.countDocuments(query),
+    User.find(query).skip(Number(from)).limit(Number(limit)),
+  ]);
+
+  const [totalUsers, Users] = promiseResponse;
+
+  res.json({
+    sms: 'get USER - API',
+    totalUsers,
+    Users,
+  });
+
+  // res.json({ sms: 'get USER - API', 'Total Users': totalUsers, users });
 };
 
 const postUsers = async (req = request, res = response) => {
@@ -32,7 +46,7 @@ const postUsers = async (req = request, res = response) => {
 const putUsers = async (req = request, res = response) => {
   const { id } = req.params;
 
-  const { _id, status, password, email, ...restParams } = req.body;
+  const { _id, password, email, ...restParams } = req.body;
 
   // TODO validar contra mongoDB
 

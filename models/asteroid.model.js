@@ -31,6 +31,10 @@ const AsteroidSchema = Schema(
       type: Number,
       required: [true, 'An asteroid must have a mean anomaly value'],
     },
+    status: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

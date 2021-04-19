@@ -4,10 +4,25 @@ const { response, request } = require('express');
 
 const Asteroid = require('../models/asteroid.model');
 
-const getAsteroids = (req = request, res = response) => {
-  const { page = 1, limit = 3 } = req.query;
+const getAsteroids = async (req = request, res = response) => {
+  const { limit = 5, from = 1 } = req.query;
 
-  res.json({ sms: 'get ASTEROID - API', page, limit });
+  const query = { status: true };
+
+  // const asteroid = await Asteroid.find(query).skip(Number(from)).limit(Number(limit));
+  // const totalAsteroids = await Asteroid.countDocuments(query);
+
+  const [totalAsteroids, Asteroids] = await Promise.all([
+    Asteroid.countDocuments(query),
+    Asteroid.find(query).skip(Number(from)).limit(Number(limit)),
+  ]);
+
+  res.json({
+    sms: 'get ASTEROID - API',
+    totalAsteroids,
+    Asteroids,
+  });
+  // res.json({ sms: 'get ASTEROID - API', 'Total Asteroids': totalAsteroids, asteroid });
 };
 
 const postAsteroids = async (req = request, res = response) => {
