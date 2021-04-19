@@ -3,40 +3,43 @@ const csvtojson = require('csvtojson');
 require('dotenv').config();
 
 const Asteroid = require('../models/asteroid.model');
+const User = require('../models/user.model');
 
 // Init Script from (root '/')
 const { dbConnection } = require('../database/mongoose.config');
 
-// Delete all Asteroids
-const initAsteroidsDB = async () => {
+const initDatabase = async () => {
   try {
-    console.log('Emptying asteroids collection...');
+    console.log('Emptying asteroids and users collection...');
 
+    // Delete all Asteroids
     await Asteroid.deleteMany();
+    // Delete all Users
+    await User.deleteMany();
 
     console.log('Data successfully deleted!');
 
     // Read CSV file with asteroids
-    await csvtojson()
-      .fromFile('./database/OrbitalParameters_PHAs.csv')
-      .then(async (listAsteroidsObj) => {
-        // console.log(listAsteroidsObj);
-        await Asteroid.create(listAsteroidsObj);
+    const databasesToInit = ['Users', 'OrbitalParameters_PHAs'];
 
-        console.log(
-          `Data successfully loaded!. ${listAsteroidsObj.length} asteroids have been created.`
-        );
-      });
+    for (let i = 0; i < databasesToInit.length; i++) {
+      const element = databasesToInit[i];
+      console.log(element);
+
+      await csvtojson()
+        .fromFile(`./database/${element}.csv`)
+        .then(async (element) => {
+          if (i === 0) await User.create(element);
+          if (i === 1) await Asteroid.create(element);
+
+          console.log(`Data successfully loaded!. ${element.length} have been created.`);
+        });
+    }
   } catch (error) {
     console.log(`There was an error!: ${error}`);
     process.exit(1);
   }
 };
-
-// Open ConnectDb
-// const connectDB = async () => {
-//   await dbConnection();
-// };
 
 const askUser = (askText) => {
   return new Promise((resolve, reject) => {
@@ -45,16 +48,18 @@ const askUser = (askText) => {
       output: process.stdout,
     });
 
-    readLine.question(askText, (answer) => {
+    readLine.question(askText, (userResponse) => {
       readLine.close();
-      resolve(answer);
+      resolve(userResponse);
     });
   });
 };
 
 const connectDB = async () => {
   try {
-    const db = await dbConnection();
+    // Open ConnectDb Mongo
+    await dbConnection();
+
     // Ask to initialize DB
     const response = await askUser('Are you sure to initialize DB? (no/yes) ');
 
@@ -63,7 +68,7 @@ const connectDB = async () => {
       return process.exit();
     }
 
-    await initAsteroidsDB();
+    await initDatabase();
 
     // close connection
     process.exit();
